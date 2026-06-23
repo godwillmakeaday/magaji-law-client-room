@@ -141,3 +141,46 @@ git push
 ```
 
 Then let Vercel build and redeploy the connected GitHub repository.
+
+## Stage 5A — Real Database and Intake Persistence
+
+Stage 5A adds the first real backend layer to the Client Room:
+
+- Prisma ORM and PostgreSQL schema
+- `DATABASE_URL` environment variable support
+- real intake-submission API routes
+- conflict-party persistence
+- legal-document acceptance persistence
+- audit-log creation
+- admin dashboard database fetch with demo fallback
+- intake detail database fetch and status update with demo fallback
+- `.env.example`
+- `docs/STAGE_5A_DATABASE_SETUP.md`
+
+New backend routes:
+
+- `POST /api/intake` — create a new preliminary intake record
+- `GET /api/intake` — list recent intake submissions for admin review
+- `GET /api/intake/[id]` — read one intake with conflict parties and legal-document acceptances
+- `PATCH /api/intake/[id]` — update intake status for office review
+
+Prisma scripts:
+
+```bash
+npm run prisma:generate
+npm run prisma:push
+npm run prisma:studio
+```
+
+Setup:
+
+```bash
+npm install
+cp .env.example .env
+# Add DATABASE_URL
+npx prisma generate
+npx prisma db push
+npm run dev
+```
+
+Production warning: Stage 5A is not yet the full production backend. It does not include real authentication, protected file upload, payment processing, staff authorisation, email notifications, or matter-code access. Do not use it for sensitive live client data until those later stages are completed and tested.
