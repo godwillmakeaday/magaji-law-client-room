@@ -184,3 +184,27 @@ npm run dev
 ```
 
 Production warning: Stage 5A is not yet the full production backend. It does not include real authentication, protected file upload, payment processing, staff authorisation, email notifications, or matter-code access. Do not use it for sensitive live client data until those later stages are completed and tested.
+
+
+## Stage 5B — Admin Authentication and Access Control
+
+Stage 5B adds a proper form-based admin login and replaces the temporary Basic Auth experience. The admin dashboard and intake review APIs are protected by a signed HttpOnly session cookie. Public intake submission remains open through `POST /api/intake`, while admin reads and status updates require authentication.
+
+Required production environment variables:
+
+```bash
+ADMIN_USER="change-me"
+ADMIN_PASS="change-me"
+ADMIN_SESSION_SECRET="generate-a-long-random-secret"
+```
+
+Admin routes:
+
+- `/client-room/admin/login` — office login
+- `/client-room/admin` — protected office review dashboard
+- `/api/admin/login` — creates admin session
+- `/api/admin/logout` — clears admin session
+
+Public intake remains available at `/client-room/new`.
+
+This is a single-admin bridge. Later stages should add full staff accounts, role-based access control, audit logs, and stronger operational security.

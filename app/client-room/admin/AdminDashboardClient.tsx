@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AdminIntakeCard, type AdminCardIntake } from '@/components/AdminIntakeCard';
 import { DemoModeBanner } from '@/components/DemoModeBanner';
 import { SectionLabel } from '@/components/SectionLabel';
@@ -61,6 +62,7 @@ function demoRecords(): AdminCardIntake[] {
 }
 
 export function AdminDashboardClient() {
+  const router = useRouter();
   const [records, setRecords] = useState<AdminCardIntake[]>(demoRecords());
   const [demoMode, setDemoMode] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -74,6 +76,11 @@ export function AdminDashboardClient() {
         const payload = await response.json();
 
         if (!alive) return;
+
+        if (response.status === 401) {
+          router.replace('/client-room/admin/login');
+          return;
+        }
 
         if (!response.ok || payload.demoMode) {
           setDemoMode(true);
@@ -98,6 +105,12 @@ export function AdminDashboardClient() {
       alive = false;
     };
   }, []);
+
+  async function signOut() {
+    await fetch('/api/admin/logout', { method: 'POST' });
+    router.replace('/client-room/admin/login');
+    router.refresh();
+  }
 
   const metrics = useMemo(() => {
     const total = records.length;
@@ -127,8 +140,10 @@ export function AdminDashboardClient() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <StatusBadge label="Signed in office session" />
           <StatusBadge label={demoMode ? 'Demo fallback' : 'Database-backed'} />
           <Link href="/client-room/legal" className="rounded-full border border-ink/10 bg-white/65 px-5 py-2 text-sm font-semibold text-ink/70 hover:border-brass hover:text-brass">Legal Pack</Link>
+          <button onClick={signOut} className="rounded-full border border-ink/10 bg-navy px-5 py-2 text-sm font-semibold text-vellum hover:bg-ink">Sign out</button>
         </div>
       </div>
 

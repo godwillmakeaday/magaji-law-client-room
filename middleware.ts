@@ -1,64 +1,48 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { ADMIN_COOKIE_NAME, verifyAdminSessionToken } from '@/lib/admin-auth';
 
 export const config = {
   matcher: [
-    "/client-room/admin/:path*",
-    "/api/intake/:path*",
-  ],
+    '/client-room/admin/:path*',
+    '/api/intake/:path*'
+  ]
 };
 
-function unauthorized() {
-  return new NextResponse("Authentication required", {
-    status: 401,
-    headers: {
-      "WWW-Authenticate": 'Basic realm="Magaji Law Office"',
-    },
-  });
+function isAdminLoginPath(pathname: string) {
+  return pathname === '/client-room/admin/login' || pathname.startsWith('/client-room/admin/login/');
 }
 
-function isAuthorized(request: NextRequest) {
-  const adminUser = process.env.ADMIN_USER;
-  const adminPass = process.env.ADMIN_PASS;
-
-  if (!adminUser || !adminPass) return false;
-
-  const authHeader = request.headers.get("authorization");
-  if (!authHeader || !authHeader.startsWith("Basic ")) return false;
-
-  try {
-    const encoded = authHeader.slice("Basic ".length);
-    const decoded = atob(encoded);
-    const separatorIndex = decoded.indexOf(":");
-
-    if (separatorIndex === -1) return false;
-
-    const user = decoded.slice(0, separatorIndex);
-    const pass = decoded.slice(separatorIndex + 1);
-
-    return user === adminUser && pass === adminPass;
-  } catch {
-    return false;
-  }
+function apiUnauthorized() {
+  return NextResponse.json({ error: 'Admin authentication required' }, { status: 401 });
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public users to submit new intake forms.
-  if (pathname === "/api/intake" && request.method === "POST") {
+  if (isAdminLoginPath(pathname)) {
     return NextResponse.next();
   }
 
-  // Protect admin pages and all non-public intake API access.
-  if (
-    pathname.startsWith("/client-room/admin") ||
-    pathname.startsWith("/api/intake")
-  ) {
-    if (isAuthorized(request)) {
-      return NextResponse.next();
-    }
+  if (pathname === '/api/intake' && request.method === 'POST') {
+    return NextResponse.next();
+  }
 
-    return unauthorized();
+  const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
+  const isAuthenticated = await verifyAdminSessionToken(token);
+
+  if (isAuthenticated) {
+    return NextResponse.next();
+  }
+
+  if (pathname.startsWith('/api/intake')) {
+    return apiUnauthorized();
+  }
+
+  if (pathname.startsWith('/client-room/admin')) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = '/client-room/admin/login';
+    loginUrl.searchParams.set('next', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { DemoModeBanner } from '@/components/DemoModeBanner';
 import { EmptyState } from '@/components/EmptyState';
 import { NoticeBox } from '@/components/NoticeBox';
@@ -120,6 +121,7 @@ function fromMock(id: string): DetailRecord | null {
 }
 
 export function AdminIntakeDetailClient({ id }: { id: string }) {
+  const router = useRouter();
   const [record, setRecord] = useState<DetailRecord | null>(null);
   const [demoMode, setDemoMode] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -135,6 +137,11 @@ export function AdminIntakeDetailClient({ id }: { id: string }) {
         const payload = await response.json();
 
         if (!alive) return;
+
+        if (response.status === 401) {
+          router.replace('/client-room/admin/login');
+          return;
+        }
 
         if (!response.ok || payload.demoMode) {
           setDemoMode(true);
@@ -210,6 +217,7 @@ export function AdminIntakeDetailClient({ id }: { id: string }) {
           <p className="mt-4 text-base text-ink/55">{record.referenceNumber} · {record.matterType} · {record.location}</p>
         </div>
         <div className="flex flex-wrap gap-3">
+          <StatusBadge label="Signed in office session" />
           <StatusBadge label={record.status.replaceAll('_', ' ')} />
           <Link href="/client-room/admin" className="rounded-full border border-ink/10 bg-white/60 px-5 py-2 text-sm font-semibold text-ink/70 hover:border-brass hover:text-brass">Back to desk</Link>
         </div>
