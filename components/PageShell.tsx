@@ -22,6 +22,8 @@ export function PageShell({ children }: Readonly<{ children: React.ReactNode }>)
             <Link href="/client-room/admin" className="hover:text-brass">Office Review</Link>
             <span>·</span>
             <Link href="/client-room/legal" className="hover:text-brass">Legal Pack</Link>
+            <span>·</span>
+            <Link href="/client-room/operations" className="hover:text-brass">Operations Plan</Link>
           </div>
         </div>
       </footer>

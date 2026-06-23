@@ -5,7 +5,8 @@ const navItems = [
   { href: '/client-room/new', label: 'New Intake' },
   { href: '/client-room/existing', label: 'Existing Client' },
   { href: '/client-room/admin', label: 'Office Review' },
-  { href: '/client-room/legal', label: 'Legal Pack' }
+  { href: '/client-room/legal', label: 'Legal Pack' },
+  { href: '/client-room/operations', label: 'Operations Plan' }
 ];
 
 export function BrandHeader() {

@@ -1,8 +1,8 @@
 # Magaji Law Client Room
 
-A premium, lawyer-controlled intake and existing-client access module for Magaji Law.
+A premium, lawyer-controlled intake, consent, legal-document, and matter-access module for Magaji Law.
 
-This is the **Prompt 3 Legal Document Pack version**. It adds a legal control layer to the refined Client Room UI: notices, consents, terms, engagement templates, filing-expense instructions, and non-engagement wording.
+This version includes **Stage 4: Integration and Operational Backend Plan**. It remains a static/scaffolded Next.js project, but now includes the architecture for a real production backend.
 
 ## Core doctrine
 
@@ -17,28 +17,36 @@ The Client Room is a controlled transition system:
 - inquiry to engagement;
 - engagement to matter room.
 
-## Legal Document Pack added
+## Completed layers
 
-New route:
+### Stage 1 — Client Room prototype
+Initial Next.js App Router project with Client Room routes, mock intake, existing-client room, and admin review pages.
 
-- `/client-room/legal` — Legal Document Pack index
+### Stage 2 — UI refinement
+Premium institutional interface: navy, charcoal, warm ivory, brass accents, refined cards, controlled entry doors, and improved legal-risk language.
 
-Document detail routes:
+### Stage 3 — Legal Document Pack
+Added `/client-room/legal` with 12 legal document templates and supporting structured content in `/lib/legal-documents.ts`.
 
-- `/client-room/legal/preliminary-intake-notice`
-- `/client-room/legal/no-lawyer-client-relationship`
-- `/client-room/legal/consent-to-review`
-- `/client-room/legal/conflict-check-disclosure`
-- `/client-room/legal/audio-video-consent`
-- `/client-room/legal/ai-assisted-organisation`
-- `/client-room/legal/privacy-data-protection`
-- `/client-room/legal/intake-review-fee-terms`
-- `/client-room/legal/engagement-letter`
-- `/client-room/legal/filing-expense-instruction`
-- `/client-room/legal/existing-client-room-terms`
-- `/client-room/legal/non-engagement-notice`
+### Stage 4 — Operational Backend Plan
+Added `/client-room/operations` with the backend architecture and technical scaffold for database, authentication, matter codes, upload storage, payments, notifications, admin workflow, security, audit logs, and implementation phases.
 
-## The 12 documents
+## Routes
+
+- `/` — redirects to `/client-room`
+- `/client-room` — main Client Room landing page
+- `/client-room/new` — multi-step new client intake
+- `/client-room/existing` — existing client matter-code login demo
+- `/client-room/existing/dashboard` — mock existing-client matter dashboard
+- `/client-room/admin` — mock lawyer/admin review desk
+- `/client-room/admin/intake/[id]` — intake summary and review screen
+- `/client-room/legal` — legal document pack index
+- `/client-room/legal/[slug]` — individual legal document templates
+- `/client-room/operations` — operational backend plan and implementation scaffold
+
+## Legal Document Pack
+
+The legal layer includes templates for:
 
 1. Preliminary Intake Notice
 2. No Lawyer-Client Relationship Notice
@@ -53,36 +61,61 @@ Document detail routes:
 11. Existing Client Room Terms
 12. Non-Engagement / Decline Notice
 
-## Stage logic
+These are templates and should be reviewed before live use.
 
-- Intake notice before submission.
-- Consent before review.
-- Conflict check before acceptance.
-- Engagement letter after acceptance.
-- Filing expense instruction after engagement.
-- Existing client terms after matter-code access.
+## Backend scaffold files
 
-## Professional safeguards included
+Stage 4 adds:
 
-The UI and legal pack repeatedly state that:
+- `/docs/OPERATIONAL_BACKEND_PLAN.md` — internal implementation blueprint
+- `/lib/backend-plan.ts` — structured roles, statuses, phases, workflow, security checklist, and data model plan
+- `/lib/matter-code.ts` — matter-code generation helper
+- `/lib/status-labels.ts` — readable labels and descriptions for matter statuses
+- `/lib/notifications.ts` — notification template scaffold
+- `/components/OperationsSection.tsx`
+- `/components/BackendPhaseCard.tsx`
+- `/components/DataModelCard.tsx`
+- `/components/WorkflowStepCard.tsx`
+- `/components/SecurityChecklist.tsx`
+- `/components/NotificationTemplateCard.tsx`
+
+## Recommended implementation order
+
+1. Keep the static prototype stable.
+2. Add PostgreSQL and Prisma.
+3. Persist intake submissions and conflict parties.
+4. Add admin review actions and status changes.
+5. Add secure file upload to object storage.
+6. Add client authentication and OTP.
+7. Add matter-code access linked to registered contact details.
+8. Add invoice and payment provider integration.
+9. Add email notifications.
+10. Add audit logs and role-based access controls.
+11. Add AI-assisted chronology and question preparation under lawyer supervision.
+
+## Professional risk wording included
+
+The UI repeatedly states that:
 
 - submitting facts does not automatically create a lawyer-client relationship;
 - the firm must review and check conflicts before acceptance;
 - AI may organise facts but does not replace lawyer judgment;
-- filing fees/expenses should only be requested after engagement and specific filing instruction;
-- the existing client room is for accepted matters only;
-- non-engagement must be communicated clearly where the firm declines or has not accepted a matter.
+- preliminary payment should be consultation or intake review fee;
+- filing expenses should only be requested after engagement and specific filing instruction.
 
-## Routes
+## Important limitation
 
-- `/client-room` — main Client Room landing page
-- `/client-room/new` — multi-step new client intake
-- `/client-room/existing` — existing client matter-code login demo
-- `/client-room/existing/dashboard` — mock existing-client matter dashboard
-- `/client-room/admin` — mock lawyer/admin review desk
-- `/client-room/admin/intake/[id]` — intake summary and review screen
-- `/client-room/legal` — legal document pack
-- `/client-room/legal/[slug]` — individual legal document templates
+This is not yet production backend infrastructure. Before public use, connect and test:
+
+- real authentication and OTP;
+- secure object storage;
+- encrypted/persistent database;
+- payment provider;
+- email provider;
+- audit logs;
+- role-based permissions;
+- data retention and backup policy;
+- final lawyer-approved notices and terms.
 
 ## Run locally
 
@@ -99,29 +132,12 @@ http://localhost:3000/client-room
 
 ## Termux note
 
-Plain Termux may fail to run `next dev` because Next.js tries to fetch Android SWC binaries. The recommended workflow is:
+Plain Termux may fail to run `next dev` because Next.js may try to fetch Android SWC binaries. The recommended workflow is:
 
 ```bash
 git add .
-git commit -m "Add Client Room legal document pack"
+git commit -m "Add operations backend plan"
 git push
 ```
 
 Then let Vercel build and redeploy the connected GitHub repository.
-
-## Important limitation
-
-These documents are templates. They must be reviewed, customised, and approved before live use with real clients. Before production use, connect and review:
-
-- real authentication and OTP;
-- secure file storage;
-- encrypted database;
-- payment provider;
-- audit logs;
-- privacy notices mapped to actual data processors;
-- conflict-check workflow;
-- final lawyer-approved intake terms;
-- engagement-letter generation;
-- office user permissions;
-- retention and deletion policy;
-- AI-provider and data-processing policy.

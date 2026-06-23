@@ -122,14 +122,26 @@ export default function ClientRoomLanding() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-24 md:px-8">
-        <div className="rounded-[2rem] border border-brass/25 bg-navy p-7 text-vellum shadow-institution md:p-9">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brass">Legal document layer</p>
-          <div className="mt-4 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h2 className="font-display text-3xl leading-tight md:text-4xl">The legal pack behind the Client Room.</h2>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-vellum/58">Notices, consents, fee terms, engagement templates, filing instructions, and non-engagement documents now support the workflow.</p>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-[2rem] border border-brass/25 bg-navy p-7 text-vellum shadow-institution md:p-9">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brass">Legal document layer</p>
+            <div className="mt-4 flex flex-col gap-5">
+              <div>
+                <h2 className="font-display text-3xl leading-tight md:text-4xl">The legal pack behind the Client Room.</h2>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-vellum/58">Notices, consents, fee terms, engagement templates, filing instructions, and non-engagement documents now support the workflow.</p>
+              </div>
+              <Link href="/client-room/legal" className="w-fit rounded-full bg-brass px-6 py-3 text-sm font-bold text-navy transition hover:bg-vellum">View Legal Pack</Link>
             </div>
-            <Link href="/client-room/legal" className="w-fit rounded-full bg-brass px-6 py-3 text-sm font-bold text-navy transition hover:bg-vellum">View Legal Pack</Link>
+          </div>
+          <div className="rounded-[2rem] border border-ink/10 bg-white/74 p-7 shadow-institution backdrop-blur md:p-9">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brass">Operational backend layer</p>
+            <div className="mt-4 flex flex-col gap-5">
+              <div>
+                <h2 className="font-display text-3xl leading-tight text-ink md:text-4xl">The roadmap for the real office system.</h2>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-ink/58">Database, authentication, matter codes, secure storage, payment flow, notifications, admin workflow, and audit-trail architecture now sit behind the prototype.</p>
+              </div>
+              <Link href="/client-room/operations" className="w-fit rounded-full bg-navy px-6 py-3 text-sm font-bold text-vellum transition hover:bg-brass hover:text-navy">View Operations Plan</Link>
+            </div>
           </div>
         </div>
       </section>
