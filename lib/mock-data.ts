@@ -13,6 +13,18 @@ export const matterTypes: MatterType[] = [
   'Other'
 ];
 
+
+export const documentCategories = [
+  'Court papers',
+  'Police documents',
+  'Land/property documents',
+  'Agreements',
+  'Receipts/payment evidence',
+  'Photos/screenshots',
+  'Correspondence',
+  'Other documents'
+];
+
 export const matterStages: MatterStage[] = [
   'Intake received',
   'Conflict check',
@@ -141,5 +153,10 @@ export const matterTimeline: MatterEvent[] = [
     date: '24 Jun 2026',
     title: 'Lawyer review scheduled',
     note: 'Internal review placeholder. No court filing has been approved yet.'
+  },
+  {
+    date: 'Pending',
+    title: 'Client action required',
+    note: 'Client should upload missing papers before any engagement, filing expense, or court route is confirmed.'
   }
 ];

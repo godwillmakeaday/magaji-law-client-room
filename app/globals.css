@@ -18,7 +18,8 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 20% 0%, rgba(176, 141, 87, 0.13), transparent 34rem),
+    radial-gradient(circle at 15% 0%, rgba(176, 141, 87, 0.14), transparent 32rem),
+    radial-gradient(circle at 100% 20%, rgba(7, 20, 38, 0.10), transparent 34rem),
     linear-gradient(180deg, #fbf8f1 0%, #f7f1e7 48%, #efe6d8 100%);
   color: var(--foreground);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -43,6 +44,13 @@ button {
   background-size: 42px 42px;
 }
 
+.vault-grid {
+  background-image:
+    linear-gradient(rgba(251, 248, 241, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 248, 241, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
 .fine-border {
   border: 1px solid rgba(17, 24, 39, 0.12);
 }
@@ -59,13 +67,43 @@ button {
   backdrop-filter: blur(16px);
 }
 
+.chamber-card-dark {
+  border: 1px solid rgba(251, 248, 241, 0.12);
+  background: linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.03));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+}
+
 .notice-card {
   border-left: 3px solid #b08d57;
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .matter-paper {
   background:
-    linear-gradient(135deg, rgba(255,255,255,0.88), rgba(247,241,231,0.82)),
+    linear-gradient(135deg, rgba(255,255,255,0.92), rgba(247,241,231,0.86)),
     repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(17,24,39,0.04) 32px);
+}
+
+.field-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba(17, 24, 39, 0.72);
+}
+
+.field-control {
+  margin-top: 0.5rem;
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.85rem 1rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.field-control:focus {
+  border-color: rgba(176, 141, 87, 0.85);
+  box-shadow: 0 0 0 4px rgba(176, 141, 87, 0.12);
 }
