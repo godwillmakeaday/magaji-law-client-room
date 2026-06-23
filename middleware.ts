@@ -4,7 +4,10 @@ import { ADMIN_COOKIE_NAME, verifyAdminSessionToken } from '@/lib/admin-auth';
 export const config = {
   matcher: [
     '/client-room/admin/:path*',
-    '/api/intake/:path*'
+    '/api/intake/:path*',
+    '/api/matter/:path*',
+    '/api/matters/:path*',
+    '/api/matters'
   ]
 };
 
@@ -16,6 +19,12 @@ function apiUnauthorized() {
   return NextResponse.json({ error: 'Admin authentication required' }, { status: 401 });
 }
 
+function isPublicApiAccess(pathname: string, method: string) {
+  if (pathname === '/api/intake' && method === 'POST') return true;
+  if (pathname === '/api/matter/access' && method === 'POST') return true;
+  return false;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -23,7 +32,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (pathname === '/api/intake' && request.method === 'POST') {
+  if (isPublicApiAccess(pathname, request.method)) {
     return NextResponse.next();
   }
 
@@ -34,7 +43,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith('/api/intake')) {
+  if (pathname.startsWith('/api/intake') || pathname.startsWith('/api/matter') || pathname.startsWith('/api/matters')) {
     return apiUnauthorized();
   }
 

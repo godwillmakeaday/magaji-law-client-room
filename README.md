@@ -208,3 +208,28 @@ Admin routes:
 Public intake remains available at `/client-room/new`.
 
 This is a single-admin bridge. Later stages should add full staff accounts, role-based access control, audit logs, and stronger operational security.
+
+
+## Stage 5C — Matter Code Creation and Acceptance Workflow
+
+Stage 5C adds the acceptance bridge between public intake and existing-client matter access.
+
+What it adds:
+
+- Admin decision actions for conflict check, clarification, consultation, engagement pending, acceptance, and decline.
+- `POST /api/intake/[id]/accept` to convert an intake into a matter.
+- `POST /api/intake/[id]/decline` to decline an intake.
+- `POST /api/intake/[id]/decision` for intermediate admin decisions.
+- Matter-code generation after acceptance.
+- Protected matter list at `/client-room/admin/matters`.
+- Protected matter detail at `/client-room/admin/matter/[matterCode]`.
+- Public matter-code verification through `POST /api/matter/access`.
+- Existing Client Room now verifies matter code plus registered phone/email before showing limited status.
+
+Security model:
+
+- Public users cannot list or read matters.
+- Public users cannot read intake records.
+- Public users can still submit intake through `POST /api/intake`.
+- Matter-code access returns only a limited safe summary and never exposes narration, conflict parties, or internal notes.
+- Full client authentication should still be added in Stage 5D.

@@ -18,6 +18,16 @@ const baseMetrics = [
   ['Awaiting client action', '0', 'Documents or clarification pending']
 ];
 
+type ApiMatterSummary = {
+  id: string;
+  matterCode: string;
+  title: string;
+  matterType: string;
+  status: string;
+  createdAt: string;
+  intakeSubmission?: { fullName: string; referenceNumber: string } | null;
+};
+
 type ApiIntakeSummary = {
   id: string;
   referenceNumber: string;
@@ -66,9 +76,21 @@ export function AdminDashboardClient() {
   const [records, setRecords] = useState<AdminCardIntake[]>(demoRecords());
   const [demoMode, setDemoMode] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [matters, setMatters] = useState<ApiMatterSummary[]>([]);
 
   useEffect(() => {
     let alive = true;
+
+    async function loadMatters() {
+      try {
+        const response = await fetch('/api/matters', { cache: 'no-store' });
+        const payload = await response.json();
+        if (!alive) return;
+        if (response.ok) setMatters(payload.matters ?? []);
+      } catch {
+        if (alive) setMatters([]);
+      }
+    }
 
     async function loadIntakes() {
       try {
@@ -100,6 +122,7 @@ export function AdminDashboardClient() {
     }
 
     loadIntakes();
+    loadMatters();
 
     return () => {
       alive = false;
@@ -117,7 +140,7 @@ export function AdminDashboardClient() {
     const conflict = records.filter((record) => record.status.includes('CONFLICT')).length;
     const urgent = records.filter((record) => record.urgency.toLowerCase().includes('urgent') || record.urgency.toLowerCase().includes('police') || record.urgency.toLowerCase().includes('court')).length;
     const consultation = records.filter((record) => record.status.includes('CONSULTATION') || record.status.includes('consultation')).length;
-    const accepted = records.filter((record) => record.status.includes('ACCEPTED') || record.status.includes('Accepted')).length;
+    const accepted = Math.max(records.filter((record) => record.status.includes('ACCEPTED') || record.status.includes('Accepted')).length, matters.length);
 
     return [
       ['New submissions', String(total), 'Fresh records awaiting triage'],
@@ -125,9 +148,9 @@ export function AdminDashboardClient() {
       ['Urgent reviews', String(urgent), 'Police, court, or time-sensitive flags'],
       ['Consultation required', String(consultation), 'Matters likely needing lawyer interview'],
       ['Accepted matters', String(accepted), 'Controlled files already opened'],
-      ['Awaiting client action', '0', 'Documents or clarification pending']
+      ['Awaiting client action', String(matters.filter((matter) => matter.status.includes('AWAITING_CLIENT_ACTION')).length), 'Documents or clarification pending']
     ];
-  }, [records]);
+  }, [records, matters]);
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
@@ -142,6 +165,7 @@ export function AdminDashboardClient() {
         <div className="flex flex-wrap items-center gap-3">
           <StatusBadge label="Signed in office session" />
           <StatusBadge label={demoMode ? 'Demo fallback' : 'Database-backed'} />
+          <Link href="/client-room/admin/matters" className="rounded-full border border-ink/10 bg-white/65 px-5 py-2 text-sm font-semibold text-ink/70 hover:border-brass hover:text-brass">Accepted Matters</Link>
           <Link href="/client-room/legal" className="rounded-full border border-ink/10 bg-white/65 px-5 py-2 text-sm font-semibold text-ink/70 hover:border-brass hover:text-brass">Legal Pack</Link>
           <button onClick={signOut} className="rounded-full border border-ink/10 bg-navy px-5 py-2 text-sm font-semibold text-vellum hover:bg-ink">Sign out</button>
         </div>
@@ -167,6 +191,27 @@ export function AdminDashboardClient() {
           </button>
         ))}
       </div>
+
+
+      <section className="mt-10 rounded-[2rem] border border-ink/10 bg-white/65 p-6 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-brass">Recently accepted matters</p>
+            <h2 className="mt-2 font-display text-3xl text-ink">Matter-code register preview.</h2>
+          </div>
+          <Link href="/client-room/admin/matters" className="rounded-full bg-navy px-5 py-2 text-sm font-semibold text-vellum hover:bg-slateblue">View all matters</Link>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {matters.slice(0, 3).map((matter) => (
+            <Link key={matter.id} href={`/client-room/admin/matter/${matter.matterCode}`} className="rounded-3xl border border-ink/10 bg-parchment p-4 text-sm text-ink/65 hover:border-brass">
+              <span className="block text-xs font-semibold uppercase tracking-[0.22em] text-brass">{matter.matterCode}</span>
+              <span className="mt-2 block font-semibold text-ink">{matter.title}</span>
+              <span className="mt-1 block text-ink/50">{matter.status.replaceAll('_', ' ')}</span>
+            </Link>
+          ))}
+          {!matters.length ? <p className="rounded-3xl border border-ink/10 bg-parchment p-4 text-sm text-ink/55 md:col-span-3">No accepted matters have been created yet.</p> : null}
+        </div>
+      </section>
 
       <section className="mt-10 grid gap-5 lg:grid-cols-3">
         {records.map((intake) => <AdminIntakeCard key={intake.id} intake={intake} />)}
