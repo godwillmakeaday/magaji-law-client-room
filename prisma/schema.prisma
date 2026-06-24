@@ -51,6 +51,7 @@ model User {
   clientMatters            Matter[]                  @relation("ClientMatters")
   assignedMatters          Matter[]                  @relation("AssignedLawyerMatters")
   legalDocumentAcceptances LegalDocumentAcceptance[]
+  otpChallenges            ClientOtpChallenge[]
 }
 
 model ClientProfile {
@@ -131,6 +132,7 @@ model Matter {
   assignedLawyer           User?                     @relation("AssignedLawyerMatters", fields: [assignedLawyerId], references: [id], onDelete: SetNull)
   intakeSubmission         IntakeSubmission?         @relation(fields: [intakeSubmissionId], references: [id], onDelete: SetNull)
   legalDocumentAcceptances LegalDocumentAcceptance[]
+  otpChallenges            ClientOtpChallenge[]
 }
 
 model AuditLog {
@@ -141,4 +143,27 @@ model AuditLog {
   entityId   String?
   metadata   Json?
   createdAt  DateTime @default(now())
+}
+
+
+model ClientOtpChallenge {
+  id           String   @id @default(cuid())
+  matterId     String
+  matterCode   String
+  contactValue String
+  otpHash      String
+  expiresAt    DateTime
+  usedAt       DateTime?
+  attempts     Int      @default(0)
+  maxAttempts  Int      @default(5)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  ipAddress    String?
+  userAgent    String?
+
+  matter       Matter   @relation(fields: [matterId], references: [id], onDelete: Cascade)
+
+  @@index([matterCode])
+  @@index([contactValue])
+  @@index([expiresAt])
 }

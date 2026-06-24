@@ -112,6 +112,15 @@ export function AdminMatterDetailClient({ matterCode }: { matterCode: string }) 
             </section>
 
             <aside className="space-y-5">
+
+              <NoticeBox title="Client access" tone="dark">
+                <div className="space-y-2 text-sm leading-7">
+                  <p>Existing-client access now uses matter code, registered contact verification, OTP, and a secure session.</p>
+                  <p><strong>Registered phone:</strong> {maskContact(matter.intakeSubmission?.phone)}</p>
+                  <p><strong>Registered email:</strong> {maskContact(matter.intakeSubmission?.email ?? '')}</p>
+                  <p>Do not issue or re-issue the matter code before engagement confirmation or office approval.</p>
+                </div>
+              </NoticeBox>
               <NoticeBox title="Future documents">
                 Engagement letters, filing instructions, receipts, uploaded evidence, and office messages will be connected in later backend stages.
               </NoticeBox>
@@ -136,4 +145,16 @@ function Info({ label, value }: { label: string; value: string }) {
       <p className="mt-2 text-sm font-semibold text-ink/70">{value}</p>
     </div>
   );
+}
+
+
+function maskContact(value: string | null | undefined) {
+  const normalized = (value ?? '').toLowerCase().replace(/\s+/g, '').trim();
+  if (!normalized) return 'Not recorded';
+  if (normalized.includes('@')) {
+    const [name, domain] = normalized.split('@');
+    return `${name.slice(0, 2)}***@${domain ?? 'email'}`;
+  }
+  if (normalized.length <= 4) return '***';
+  return `${normalized.slice(0, 3)}***${normalized.slice(-3)}`;
 }

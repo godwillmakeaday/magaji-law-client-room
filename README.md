@@ -233,3 +233,41 @@ Security model:
 - Public users can still submit intake through `POST /api/intake`.
 - Matter-code access returns only a limited safe summary and never exposes narration, conflict parties, or internal notes.
 - Full client authentication should still be added in Stage 5D.
+
+
+## Stage 5D — Client OTP Authentication and Secure Matter Access
+
+Stage 5D upgrades the Existing Client Room from simple matter-code lookup into OTP-backed client access. Existing clients now request an access code using their matter code and registered phone/email. Successful verification creates a signed HttpOnly client session, and the dashboard fetches limited matter status from the server.
+
+Added in this stage:
+
+- `/api/client/request-otp`
+- `/api/client/verify-otp`
+- `/api/client/logout`
+- `/api/client/matter`
+- `lib/client-auth.ts`
+- `lib/otp.ts`
+- `lib/otp-delivery.ts`
+- `ClientOtpChallenge` Prisma model
+- protected `/client-room/existing/dashboard`
+- OTP-based Existing Client Room UI
+- secure client logout
+
+Required environment variables:
+
+```env
+CLIENT_SESSION_SECRET="generate-a-long-random-secret"
+OTP_DELIVERY_MODE="disabled"
+EMAIL_FROM=""
+EMAIL_PROVIDER_API_KEY=""
+```
+
+The OTP delivery adapter is a scaffold. A real email/SMS provider must be connected before relying on live client OTP access. Direct matter-code lookup has been replaced so the client dashboard opens only after OTP verification.
+
+After applying this stage, push the additive Prisma change:
+
+```bash
+npx prisma db push
+```
+
+Do not use `--accept-data-loss`.
