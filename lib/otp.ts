@@ -67,3 +67,12 @@ export function maskContactValue(value: string | null | undefined) {
   if (normalized.length <= 4) return '***';
   return `${normalized.slice(0, 3)}***${normalized.slice(-3)}`;
 }
+export function isEmailContact(value: string | null | undefined) {
+  const normalized = normaliseContactValue(value);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
+}
+
+export function isPhoneContact(value: string | null | undefined) {
+  const normalized = normaliseContactValue(value);
+  return /^\+?[0-9]{7,15}$/.test(normalized.replace(/[()-]/g, ''));
+}

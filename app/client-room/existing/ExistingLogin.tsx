@@ -52,7 +52,7 @@ export function ExistingLogin() {
 
       setChallengeId(payload.challengeId);
       setMaskedContact(payload.maskedContact ?? 'registered contact');
-      setNotice(payload.message ?? 'Access code requested.');
+      setNotice(payload.message ?? 'If the details match our records, an access code has been sent.');
       setStep('verify');
     } catch {
       setError('Matter access could not be verified. Please try again or contact the office.');
@@ -129,7 +129,7 @@ export function ExistingLogin() {
             </label>
             <label className="block">
               <span className="field-label">Registered phone or email</span>
-              <input value={identifier} onChange={(event) => setIdentifier(event.target.value)} className="field-control" placeholder="Phone / email" />
+              <input value={identifier} onChange={(event) => setIdentifier(event.target.value)} className="field-control" placeholder="Registered email preferred; SMS is not yet active" />
             </label>
             <label className="block">
               <span className="field-label">Client surname <span className="text-ink/40">(optional for now)</span></span>
@@ -144,7 +144,7 @@ export function ExistingLogin() {
         ) : (
           <form onSubmit={verifyOtp} className="mt-8 grid gap-5">
             <div className="rounded-[1.4rem] border border-ink/10 bg-parchment p-4 text-sm leading-7 text-ink/60">
-              An access code was prepared for <strong className="text-ink">{maskedContact}</strong>. Enter the 6-digit code within 10 minutes.
+              If the details match our records, an access code was sent to <strong className="text-ink">{maskedContact}</strong>. Enter the 6-digit code within 10 minutes.
             </div>
             {notice ? <p className="rounded-2xl bg-amber-50 p-3 text-sm text-amber-800">{notice}</p> : null}
             <label className="block">
@@ -163,7 +163,7 @@ export function ExistingLogin() {
           </form>
         )}
 
-        <p className="mt-5 text-xs leading-6 text-ink/50">This bridge does not expose narration, parties, conflict details, evidence, legal acceptances, or admin notes.</p>
+        <p className="mt-5 text-xs leading-6 text-ink/50">Email OTP is active when a registered email exists. SMS delivery is not yet active; phone-only clients should contact the office. This bridge does not expose narration, parties, conflict details, evidence, legal acceptances, or admin notes.</p>
       </div>
     </div>
   );

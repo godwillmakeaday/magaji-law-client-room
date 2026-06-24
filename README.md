@@ -271,3 +271,9 @@ npx prisma db push
 ```
 
 Do not use `--accept-data-loss`.
+
+## Stage 5D-Delivery — Email OTP Delivery
+
+Existing Client Room can now send OTP access codes by email when `OTP_DELIVERY_MODE=resend` is configured with `RESEND_API_KEY` and `OTP_FROM_EMAIL`. The OTP is not returned to the browser in production, is stored hashed, expires after 10 minutes, and still requires matter-code plus registered contact verification.
+
+Phone/SMS delivery is not active yet. Registered phone-only access should be handled by the office until a future SMS provider stage is connected. Public intake remains open, admin authentication remains protected, and client dashboard access still requires a verified client session.

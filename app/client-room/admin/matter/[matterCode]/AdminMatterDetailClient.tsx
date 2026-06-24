@@ -115,9 +115,10 @@ export function AdminMatterDetailClient({ matterCode }: { matterCode: string }) 
 
               <NoticeBox title="Client access" tone="dark">
                 <div className="space-y-2 text-sm leading-7">
-                  <p>Existing-client access now uses matter code, registered contact verification, OTP, and a secure session.</p>
+                  <p>Existing-client access now uses matter code, registered contact verification, email OTP where a registered email exists, and a secure session.</p>
                   <p><strong>Registered phone:</strong> {maskContact(matter.intakeSubmission?.phone)}</p>
                   <p><strong>Registered email:</strong> {maskContact(matter.intakeSubmission?.email ?? '')}</p>
+                  <p>Email OTP delivery is enabled when the registered client email exists. Phone/SMS delivery is not yet configured.</p>
                   <p>Do not issue or re-issue the matter code before engagement confirmation or office approval.</p>
                 </div>
               </NoticeBox>

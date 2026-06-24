@@ -89,6 +89,7 @@ export async function POST(request: NextRequest) {
     const delivery = await sendOtpCode({ contactValue, code, matterCode: matter.matterCode });
 
     if (!delivery.success) {
+      await (prisma as any).clientOtpChallenge.delete({ where: { id: challenge.id } }).catch(() => undefined);
       return NextResponse.json({
         success: false,
         message: delivery.message,
@@ -101,7 +102,7 @@ export async function POST(request: NextRequest) {
       challengeId: challenge.id,
       maskedContact: maskContactValue(contactValue),
       expiresInMinutes: 10,
-      message: delivery.message || 'Access code sent.'
+      message: 'If the details match our records, an access code has been sent.'
     });
   } catch (error) {
     console.error('Client OTP request failed', error);
