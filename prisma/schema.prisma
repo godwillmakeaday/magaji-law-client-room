@@ -51,7 +51,6 @@ model User {
   clientMatters            Matter[]                  @relation("ClientMatters")
   assignedMatters          Matter[]                  @relation("AssignedLawyerMatters")
   legalDocumentAcceptances LegalDocumentAcceptance[]
-  otpChallenges            ClientOtpChallenge[]
 }
 
 model ClientProfile {
@@ -132,7 +131,6 @@ model Matter {
   assignedLawyer           User?                     @relation("AssignedLawyerMatters", fields: [assignedLawyerId], references: [id], onDelete: SetNull)
   intakeSubmission         IntakeSubmission?         @relation(fields: [intakeSubmissionId], references: [id], onDelete: SetNull)
   legalDocumentAcceptances LegalDocumentAcceptance[]
-  otpChallenges            ClientOtpChallenge[]
 }
 
 model AuditLog {
